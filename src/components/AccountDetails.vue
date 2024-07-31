@@ -1,16 +1,18 @@
 <template>
     <div>
-        <q-card>
-            <q-card-section>
+        <q-card style="width: 100%; margin-bottom: 0.1rem;" stretch>
+            <q-card-section >
                 <div class="Inline Flex row wrap justify-between items-center">
-                <div class="text-6 text-grey-9 flex grow">{{ bank.AcctNum }}</div>
+                <div class="text-6 text-grey-9 ">{{ bank.AcctNum }}</div>
                 <div class="flex row items-center">
-                <div class="text-6 text-grey-9">{{ bank.balance}} р.</div>
-                <div class="q-pa-md q-gutter-sm">
-                <q-btn square color="blue" round icon="edit"/>
-                <q-btn square color="red" round icon="delete" @click="store.deleteAcct(bank.id)"/>
+                <div class="text-6 text-grey-9 q-ma-sm">{{ bank.balance}} р.</div>
+                <div class="q-pa-sm q-gutter-sm">
+                    <div class="flex" style="gap: 0.5rem;">
+                <AccountEdit/>
+                <q-btn square round color="red" icon="delete" @click="store.deleteAcct(bank.id)"/>
             </div>
-                </div>
+            </div>
+            </div>
             </div>
             </q-card-section>
         </q-card>
@@ -20,8 +22,10 @@
 <script>
    import { store } from 'quasar/wrappers';
 import { useBankStore } from 'stores/bankStore';
+import AccountEdit from './AccountEdit.vue';
 
 export default {
+    components: { AccountEdit},
     props: ['bank'],
   setup() {
     const store = useBankStore();

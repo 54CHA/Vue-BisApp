@@ -1,7 +1,6 @@
 <template>
-     <div class="q-pa-md flex row items-center" style="max-width: 400px">
         <div class="cursor-pointer">
-           <q-btn name="add" color="primary" icon-right="add" label="Добавить Аккаунт"> 
+           <q-btn name="edit" square color="blue" round icon="edit"> 
         <q-popup-proxy cover transition-show="scale" transition-hide="scale">
 <q-form
   @submit="onSubmit"
@@ -9,13 +8,13 @@
 >
   <q-input
     filled
-    v-model="newAcct"
+    v-model="upAcct"
     label="Наименование счета"
   />
   <q-input
     filled
     type="number"
-    v-model="newBalance"
+    v-model="upBalance"
     label="Баланс"
   />
   <div>
@@ -27,16 +26,8 @@
 </q-btn>
 </div> 
 
-</div>
-
-<!-- <div><form @submit.prevent="onSubmit">
-    <input type="text"
-    placeholder="I need to..."
-    v-model="newAcct">
-    <button>Add</button>
-   </form></div> -->
  </template>
- 
+
  <script>
 import { useBankStore } from 'stores/bankStore';
 import { ref } from 'vue';
@@ -45,21 +36,20 @@ import { ref } from 'vue';
         setup() {
       const store = useBankStore();
 
-      const newAcct = ref('')
-      const newBalance = ref('')
+      const upAcct = ref('')
+      const upBalance = ref('')
 
 const onSubmit = () => {
-    if (newAcct.value.length > 0){
-        store.addAcct({
-            id: Math.floor(Math.random() * 10000),
-            AcctNum: newAcct.value,
-            balance: newBalance.value,
-        })
-        newAcct.value = ''
-        newBalance.value = ''
-    }
+
+  // EDIT NOT WORKING
+
+  store.$patch((state) => {
+  state.Acct.push({ AcctNum: upAcct, balance: upBalance })
+  state.hasChanged = true
+})
+
 }
-return {onSubmit, newAcct, newBalance, store}
+return {onSubmit, upAcct, upBalance, store,}
 
     },
      }

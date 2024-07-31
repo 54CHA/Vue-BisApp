@@ -1,13 +1,10 @@
 
 <template>
-  <main>
-<q-splitter
-      v-model="splitterModel"
-      style="height: 400px"
-    >
+  <main class="flex justify-center" style="gap: 1rem">
 
-    <template v-slot:before>
-      <div class="Inline Flex row items-baseline justify-center">
+
+  <div style="width: 49%;">
+      <div class="Inline Flex row items-baseline justify-center" style=" margin-right: 3rem; margin-left: 3rem">
           <h5>Банковские Счета</h5>
           <DatePicker/>
           <AccountForm/>
@@ -15,33 +12,29 @@
       <div v-for="bank in store.Acct" :key="bank">
         <AccountDetails :bank="bank"/>
       </div>
-    </template>
-
-    <template v-slot:after>
+    </div>
+    <div style="width: 49%; ">
         <div class="Inline Flex row items-baseline justify-center">
-          <h5>Операции по счету</h5>
-          
+          <h5 style="margin-bottom: 3.2rem;">Операции по счету</h5>
         </div>
-      </template>
-    </q-splitter>
+          <AccountTransaction/>
+        
+    </div>
+
   </main>
 </template>
 
-
-<!-- <div v-for="task in taskStore.tasks">
-  <TaskDetails :task="task"/>
-</div>
- -->
 
 <script>
 import AccountDetails from 'src/components/AccountDetails.vue';
 import { useBankStore } from 'stores/bankStore';
 import DatePicker from 'src/components/DatePicker.vue';
 import AccountForm from 'src/components/AccountForm.vue';
+import AccountTransaction from 'src/components/AccountTransaction.vue';
 
 
   export default {
-    components: {AccountDetails, DatePicker, AccountForm},
+    components: {AccountDetails, DatePicker, AccountForm, AccountTransaction},
     setup() {
       const store = useBankStore();
       return {store}
