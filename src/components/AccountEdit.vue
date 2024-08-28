@@ -1,56 +1,65 @@
 <template>
-        <div class="cursor-pointer">
-           <q-btn name="edit" square color="blue" round icon="edit"> 
-        <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-<q-form
-  @submit="onSubmit"
-  class="q-gutter-md"
->
-  <q-input
-    filled
-    v-model="upAcct"
-    label="Наименование счета"
-  />
-  <q-input
-    filled
-    type="number"
-    v-model="upBalance"
-    label="Баланс"
-  />
-  <div>
-    <q-btn label="Добавить" type="submit" color="primary"/>
-    <q-btn label="Отмена" clickable v-close-popup color="primary" flat class="q-ml-sm" />
-  </div>
-</q-form>
-</q-popup-proxy>
-</q-btn>
-</div> 
+  <q-card-section>
+    <q-form @submit="onSubmit" class="q-gutter-md">
+      <q-input filled v-model="upAcct" label="Наименование счета" readonly />
+      <q-input
+        filled
+        type="number"
+        v-model="upInitialBalance"
+        label="Начальный баланс"
+      />
+      <div>
+        <q-btn label="Обновить" type="submit" color="primary" />
+        <q-btn
+          label="Закрыть"
+          @click="$emit('close')"
+          color="primary"
+          flat
+          class="q-ml-sm"
+        />
+      </div>
+    </q-form>
+  </q-card-section>
+</template>
 
- </template>
+<script>
+import { useBankStore } from "stores/bankStore";
+import { ref } from "vue";
+import { useQuasar } from "quasar";
 
- <script>
-import { useBankStore } from 'stores/bankStore';
-import { ref } from 'vue';
-
-     export default {
-        setup() {
-      const store = useBankStore();
-
-      const upAcct = ref('')
-      const upBalance = ref('')
-
-const onSubmit = () => {
-
-  // EDIT NOT WORKING
-
-  store.$patch((state) => {
-  state.Acct.push({ AcctNum: upAcct, balance: upBalance })
-  state.hasChanged = true
-})
-
-}
-return {onSubmit, upAcct, upBalance, store,}
-
+export default {
+  props: {
+    account: {
+      type: Object,
+      required: true,
     },
-     }
- </script> 
+  },
+  emits: ["close"],
+  setup(props, { emit }) {
+    const store = useBankStore();
+    const $q = useQuasar();
+
+    const upAcct = ref(props.account.AcctNum);
+    const upInitialBalance = ref(props.account.initialBalance);
+
+    const onSubmit = () => {
+      store.updateAcctByNumber(upAcct.value, {
+        initialBalance: Number(upInitialBalance.value),
+      });
+      emit("close");
+      $q.notify({
+        color: "positive",
+        message: `Счет ${upAcct.value} успешно обновлен`,
+        icon: "update",
+      });
+    };
+
+    return {
+      onSubmit,
+      upAcct,
+      upInitialBalance,
+      store,
+    };
+  },
+};
+</script>
